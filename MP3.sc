@@ -45,9 +45,9 @@ MP3 {
 		var cmd, prepids, postpids, diff, cmdname, pipe, line, lines;
 		
 		cmd = if(isurl, {
-			curlpath + "--silent \"" ++ path ++ "\" |" + lamepath + "--mp3input --decode --silent - " + fifo + "> /dev/null 2>&1";
+			curlpath + "--silent \"" ++ path ++ "\" |" + lamepath + "--mp3input --decode --silent - " + fifo + "> /dev/null";
 		}, {
-			lamepath + "--decode --silent \"" ++ path ++ "\"" + fifo + "> /dev/null 2>&1";
+			lamepath + "--decode --silent \"" ++ path ++ "\"" + fifo + "> /dev/null";
 		});
 		
 		"".postln;
