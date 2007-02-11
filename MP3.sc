@@ -11,7 +11,7 @@ MP3 {
 			;
 	
 	var // These are filled by newCopyArgs:
-		<path, <isurl,
+		<path, <mode,
 		// These are other vars:
 		<fifo, <lameproc, /* <proctrackfile, */ <pid;
 	
@@ -27,8 +27,8 @@ MP3 {
 		});
 	}
 	
-	*new { |path, isurl=false|
-		^super.newCopyArgs(path, isurl).init;
+	*new { |path, mode=\readfile|
+		^super.newCopyArgs(path, mode).init;
 	}
 	
 	init {
@@ -41,35 +41,30 @@ MP3 {
 	}
 	
 	// Start the LAME command - involving some elastic trickery to work out the PID of the created process.
-	start {
+	start { |lameopts=""|
 		var cmd, prepids, postpids, diff, cmdname, pipe, line, lines;
 		
-		cmd = if(isurl, {
-			curlpath + "--silent \"" ++ path ++ "\" |" + lamepath + "--mp3input --decode --silent - " + fifo + "> /dev/null";
-		}, {
-			lamepath + "--decode --silent \"" ++ path ++ "\"" + fifo + "> /dev/null";
-		});
+		// cmd is the command to execute, cmdname is used to search for it in the list of PIDs
+		mode.switch(
+		\readurl, {
+			cmd = curlpath + "--silent \"" ++ path ++ "\" |" + lamepath + "--mp3input --decode --silent" + lameopts + " - " + fifo + "> /dev/null";
+			cmdname = "curl";
+		},
+		\writefile, {
+			cmd = lamepath + "--silent -r -s 44.1 --bitwidth 16" + lameopts + "\"" ++ fifo ++ "\"" + path + "> /dev/null";
+			cmdname = "lame";
+		}, { // Default is to read a local file
+			cmd = lamepath + "--decode --silent " + lameopts + "\"" ++ path ++ "\"" + fifo + "> /dev/null";
+			cmdname = "lame";
+		}
+		);
 		
 		"".postln;
 		//"MP3.start: command to execute is:".postln;
 		//cmd.postln;
-		
-		/*
-		How to find all "curl" processes' PIDs:
-		ps -xc -o "pid command" | grep curl | sed 's/curl//; s/ //g'
-		
-		Then how to spot the added lines:
-		Collection.difference
-		*/
-		
-		
-		// When we search the process list, we're looking for curl or lame, depending on whether streaming or not
-		cmdname = if(this.isurl, "curl", "lame");
-		
+				
 		// Need to start the process and store a reference to it
 		Task({
-			//"Please wait one second - MP3.start is initialising".postln;
-			
 			// List processes before we launch
 			pipe = Pipe.new("ps -xc -o \"pid command\" | grep" + cmdname + "| sed 's/" ++ cmdname ++ "//; s/ //g'", "r");
 			line = pipe.getLine;
