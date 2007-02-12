@@ -7,19 +7,21 @@
 <meta name="Generator" content="Cocoa HTML Writer">
 <meta name="CocoaVersion" content="824.41">
 <style type="text/css">
-p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Helvetica; color: #000000}
-p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #000000; min-height: 14.0px}
-p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #000000}
-p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #bf0000}
+p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Helvetica}
+p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #ad140d}
 p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
 p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
 p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf}
 p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
 p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
-span.s1 {color: #0000bf}
+span.s1 {color: #001bb9}
 span.s2 {color: #606060}
-span.s3 {color: #007300}
+span.s3 {color: #2c7014}
 span.s4 {color: #000000}
+span.s5 {color: #0000bf}
+span.s6 {color: #007300}
 span.Apple-tab-span {white-space:pre}
 </style>
 </head>
@@ -39,7 +41,7 @@ span.Apple-tab-span {white-space:pre}
 <p class="p3">(<span class="s2">"ls"</span> + <span class="s1">MP3</span>.lamepath).unixCmd</p>
 <p class="p3">(<span class="s2">"ls"</span> + <span class="s1">MP3</span>.curlpath).unixCmd</p>
 <p class="p2"><br></p>
-<p class="p3">In order to use this class you create an instance of it, passing a path or URL to the MP3 data as the first argument. The second constructor argument is the mode, either <span class="s3">\readfile</span> to read from a file <span class="s4">(this is the default)</span>, or <span class="s3">\readurl</span> to read from a URL, or <span class="s3">\writefile</span> to write to a file. You can then call the <b>start</b> method when you want the MP3 data to begin queueing up (i.e. before you start your SC DiskIn/DiskOut synth or whatever). You then use the <b>fifo</b> variable as the path to stream into the buffer.</p>
+<p class="p3">In order to use this class you create an instance of it, passing a path or URL to the MP3 data as the first argument. The second constructor argument is the mode, either <span class="s3">\readfile</span> to read from a file (this is the default), or <span class="s3">\readurl</span> to read from a URL, or <span class="s3">\writefile</span> to write to a file. You can then call the <b>start</b> method when you want the MP3 data to begin queueing up (i.e. before you start your SC DiskIn/DiskOut synth or whatever). You then use the <b>fifo</b> variable as the path to stream into the buffer.</p>
 <p class="p2"><br></p>
 <p class="p3">Additional arguments can be passed to the lame executable, passed in as a string as the first argument to .start.</p>
 <p class="p2"><br></p>
@@ -53,11 +55,11 @@ span.Apple-tab-span {white-space:pre}
 <p class="p6">s.boot;</p>
 <p class="p6">(</p>
 <p class="p7">SynthDef<span class="s4">(</span><span class="s2">"help_mp3_01"</span><span class="s4">, { </span>|bufnum = 0|</p>
-<p class="p6"><span class="Apple-tab-span">	</span><span class="s1">var</span> son, wibble;</p>
-<p class="p6"><span class="Apple-tab-span">	</span>son = <span class="s1">DiskIn</span>.ar(2, bufnum);</p>
-<p class="p6"><span class="Apple-tab-span">	</span>wibble = <span class="s1">LFPar</span>.kr(0.1).range(0.5, 2.0);</p>
-<p class="p6"><span class="Apple-tab-span">	</span>son = <span class="s1">PitchShift</span>.ar(son, pitchRatio: wibble);</p>
-<p class="p6"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, son);</p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="s5">var</span> son, wibble;</p>
+<p class="p6"><span class="Apple-tab-span">	</span>son = <span class="s5">DiskIn</span>.ar(2, bufnum);</p>
+<p class="p6"><span class="Apple-tab-span">	</span>wibble = <span class="s5">LFPar</span>.kr(0.1).range(0.5, 2.0);</p>
+<p class="p6"><span class="Apple-tab-span">	</span>son = <span class="s5">PitchShift</span>.ar(son, pitchRatio: wibble);</p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="s5">Out</span>.ar(0, son);</p>
 <p class="p6">}).load(s);</p>
 <p class="p6">)</p>
 <p class="p8"><br></p>
@@ -65,15 +67,15 @@ span.Apple-tab-span {white-space:pre}
 <p class="p8"><br></p>
 <p class="p5">// Choose one of these two:</p>
 <p class="p5">// (a) a stream URL - note the use of the second argument to indicate a remote stream</p>
-<p class="p9"><span class="s4">m = </span><span class="s1">MP3</span><span class="s4">(</span>"http://icecast.commedia.org.uk:8000/resonance.mp3"<span class="s4">, </span><span class="s3">\readurl</span><span class="s4">);</span></p>
+<p class="p9"><span class="s4">m = </span><span class="s5">MP3</span><span class="s4">(</span>"http://icecast.commedia.org.uk:8000/resonance.mp3"<span class="s4">, </span><span class="s6">\readurl</span><span class="s4">);</span></p>
 <p class="p5">// (b) a local file</p>
-<p class="p9"><span class="s4">m = </span><span class="s1">MP3</span><span class="s4">(</span>"/Users/dan/Music/SqueezeTheTrigger(Version1).mp3"<span class="s4">);</span></p>
-<p class="p9"><span class="s4">m = </span><span class="s1">MP3</span><span class="s4">(</span>"/Users/danstowell/Music/ManiAyer.mp3"<span class="s4">);</span></p>
+<p class="p9"><span class="s4">m = </span><span class="s5">MP3</span><span class="s4">(</span>"/Users/dan/Music/SqueezeTheTrigger(Version1).mp3"<span class="s4">);</span></p>
+<p class="p9"><span class="s4">m = </span><span class="s5">MP3</span><span class="s4">(</span>"/Users/danstowell/Music/ManiAyer.mp3"<span class="s4">);</span></p>
 <p class="p8"><br></p>
 <p class="p6">m.start;</p>
 <p class="p5">// Now you can use it almost like any other file, by reading from m.fifo</p>
-<p class="p6">b = <span class="s1">Buffer</span>.cueSoundFile(s, m.fifo, 0, 2);</p>
-<p class="p6">x = <span class="s1">Synth</span>(<span class="s2">"help_mp3_01"</span>, [<span class="s3">\bufnum</span>, b.bufnum], addAction:<span class="s3">\addToTail</span>);</p>
+<p class="p6">b = <span class="s5">Buffer</span>.cueSoundFile(s, m.fifo, 0, 2);</p>
+<p class="p6">x = <span class="s5">Synth</span>(<span class="s2">"help_mp3_01"</span>, [<span class="s6">\bufnum</span>, b.bufnum], addAction:<span class="s6">\addToTail</span>);</p>
 <p class="p5">// You can stop and restart the piping (with a bit of a delay) - note what happens</p>
 <p class="p6">m.stop;</p>
 <p class="p6">m.start;</p>
@@ -83,28 +85,41 @@ span.Apple-tab-span {white-space:pre}
 <p class="p6">m.finish;</p>
 <p class="p8"><br></p>
 <p class="p8"><br></p>
+<p class="p5">/////////////////////////////////////////////////////</p>
+<p class="p8"><br></p>
+<p class="p5">// Reading into a buffer is possible, but you *must* specify the number of (uncompressed) frames to read.</p>
+<p class="p9"><span class="s4">m = </span><span class="s5">MP3</span><span class="s4">(</span>"http://icecast.commedia.org.uk:8000/resonance.mp3"<span class="s4">, </span><span class="s6">\readurl</span><span class="s4">);</span></p>
+<p class="p6">m.start;</p>
+<p class="p6">b= <span class="s5">Buffer</span>.read(s, m.fifo, 0, 50000);</p>
+<p class="p5">// After a second or two, should be able to play a snatch of the stream</p>
+<p class="p6">b.play;</p>
+<p class="p8"><br></p>
+<p class="p5">// Please remember to tidy up after yourself:</p>
+<p class="p6">b.close; b.free;</p>
+<p class="p6">m.finish;</p>
+<p class="p8"><br></p>
 <p class="p8"><br></p>
 <p class="p5">/////////////////////////////////////////////////////</p>
 <p class="p8"><br></p>
-<p class="p5">// Second example - writing an MP3 file using DiskOut. See the DiskOut helpfile for more on this.</p>
+<p class="p5">// Writing an MP3 file using DiskOut. See the DiskOut helpfile for more on this.</p>
 <p class="p6">(</p>
 <p class="p7">SynthDef<span class="s4">(</span><span class="s2">"help_mp3_02"</span><span class="s4">, { </span>|bufnum = 0|</p>
-<p class="p6"><span class="Apple-tab-span">	</span><span class="s1">var</span> son;</p>
-<p class="p6"><span class="Apple-tab-span">	</span>son = <span class="s1">SinOsc</span>.ar(<span class="s1">SinOsc</span>.ar(<span class="s1">Line</span>.kr(1, 100, 10, doneAction:2)).range(220, 550)) * 0.1;</p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="s5">var</span> son;</p>
+<p class="p6"><span class="Apple-tab-span">	</span>son = <span class="s5">SinOsc</span>.ar(<span class="s5">SinOsc</span>.ar(<span class="s5">Line</span>.kr(1, 100, 10, doneAction:2)).range(220, 550)) * 0.1;</p>
 <p class="p6"><span class="Apple-tab-span">	</span>son = son.dup;</p>
-<p class="p6"><span class="Apple-tab-span">	</span><span class="s1">Out</span>.ar(0, son);</p>
-<p class="p6"><span class="Apple-tab-span">	</span><span class="s1">DiskOut</span>.ar(bufnum, son);</p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="s5">Out</span>.ar(0, son);</p>
+<p class="p6"><span class="Apple-tab-span">	</span><span class="s5">DiskOut</span>.ar(bufnum, son);</p>
 <p class="p6">}).load(s);</p>
 <p class="p6">)</p>
 <p class="p5">// Create an MP3 object for writing</p>
-<p class="p9"><span class="s4">m = </span><span class="s1">MP3</span><span class="s4">(</span>"recordings/mp3test.mp3"<span class="s4">, </span><span class="s3">\writefile</span><span class="s4">);</span></p>
+<p class="p9"><span class="s4">m = </span><span class="s5">MP3</span><span class="s4">(</span>"recordings/mp3test.mp3"<span class="s4">, </span><span class="s6">\writefile</span><span class="s4">);</span></p>
 <p class="p6">m.start;</p>
 <p class="p5">// allocate a disk i/o buffer</p>
-<p class="p6">b = <span class="s1">Buffer</span>.alloc(s, 65536, 2);</p>
+<p class="p6">b = <span class="s5">Buffer</span>.alloc(s, 65536, 2);</p>
 <p class="p5">// Start writing</p>
-<p class="p6">b.write(m.fifo, <span class="s2">"raw"</span>, <span class="s2">"int16"</span>, 0, 0, <span class="s1">true</span>);</p>
+<p class="p6">b.write(m.fifo, <span class="s2">"raw"</span>, <span class="s2">"int16"</span>, 0, 0, <span class="s5">true</span>);</p>
 <p class="p8"><br></p>
-<p class="p6">x = <span class="s1">Synth</span>(<span class="s2">"help_mp3_02"</span>, [<span class="s3">\bufnum</span>, b.bufnum], addAction:<span class="s3">\addToTail</span>);</p>
+<p class="p6">x = <span class="s5">Synth</span>(<span class="s2">"help_mp3_02"</span>, [<span class="s6">\bufnum</span>, b.bufnum], addAction:<span class="s6">\addToTail</span>);</p>
 <p class="p8"><br></p>
 <p class="p5">// once the writing has stopped, tidy up</p>
 <p class="p6">b.close; b.free;</p>
