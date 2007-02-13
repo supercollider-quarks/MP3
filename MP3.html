@@ -101,6 +101,15 @@ span.Apple-tab-span {white-space:pre}
 <p class="p8"><br></p>
 <p class="p5">/////////////////////////////////////////////////////</p>
 <p class="p8"><br></p>
+<p class="p5">// Alternatively, a method is provided for reading a local MP3 file more easily (won't work on streams)</p>
+<p class="p9"><span class="s4">b = </span><span class="s5">MP3</span><span class="s4">.readToBuffer(s, </span>"/localvol/sound/share/audiosamples/ISON07-York/InteractiveSonification.mp3"<span class="s4">)</span></p>
+<p class="p6">b.play;</p>
+<p class="p8"><br></p>
+<p class="p6">b.free;</p>
+<p class="p8"><br></p>
+<p class="p8"><br></p>
+<p class="p5">/////////////////////////////////////////////////////</p>
+<p class="p8"><br></p>
 <p class="p5">// Writing an MP3 file using DiskOut. See the DiskOut helpfile for more on this.</p>
 <p class="p6">(</p>
 <p class="p7">SynthDef<span class="s4">(</span><span class="s2">"help_mp3_02"</span><span class="s4">, { </span>|bufnum = 0|</p>
