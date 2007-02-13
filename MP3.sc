@@ -123,7 +123,7 @@ MP3 {
 	// Method based on suggestion by Till Bovermann
 	*readToBuffer { |server,path,startFrame = 0,numFrames, action, bufnum, lameopts="" |
 		var tmpPath = "/tmp/sc3mp3read-" ++ this.hash ++ ".wav" ;
-		(MP3.lamepath + "--decode" + lameopts + path + tmpPath).systemCmd;
+		(MP3.lamepath + "--decode" + lameopts + "\"" ++ path ++ "\"" + tmpPath).systemCmd;
 		^Buffer.read(server,tmpPath,startFrame,numFrames, {("rm" + tmpPath).unixCmd} <> action, bufnum);
 	}
 
