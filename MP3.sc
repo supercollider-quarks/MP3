@@ -13,7 +13,7 @@ MP3 {
 	var // These are filled by newCopyArgs:
 		<path, <mode,
 		// These are other vars:
-		<fifo, <lameproc, /* <proctrackfile, */ <pid;
+		<fifo, <lameproc, /* <proctrackfile, */ <pid, playing=false;
 	
 	*initClass {
 		// Check that at least *something* exists at the desired executable paths
@@ -99,6 +99,7 @@ MP3 {
 			});
 			
 			"MP3.start completed".postln;
+			playing = true;
 		}).play(AppClock);
 	}
 	
@@ -107,6 +108,8 @@ MP3 {
 			"MP3.stop - unable to stop automatically, PID not known".warn;
 		}, {
 			("kill" + pid).systemCmd;
+			pid = nil;
+			playing = false;
 		});
 	}
 	
@@ -118,6 +121,39 @@ MP3 {
 	finish {
 		this.stop;
 		("rm " ++ fifo).systemCmd;
+	}
+	
+	// Return a boolean to say whether we're playing or not
+	playing {
+		var pipe, line, lines;
+		if(playing, {
+			if(pid.isNil, {
+				^true; // We can only assume it's still playing - we have no better info!
+			}, {
+				// Check that the stream really is still playing.
+				// We can only do this if the PID is known.
+				// (If it's stopped playing, set the flag to false.)
+				
+				pipe = Pipe.new("ps -p" ++ pid, "r");
+				lines = "";
+				line = pipe.getLine;
+				while({line.notNil}, {lines = lines ++ line ++ "\n"; line = pipe.getLine; });
+				pipe.close;
+				
+				//"ps fetched the following:".postln;
+				//lines.postln;
+				
+				if(lines.contains(pid.asString), {
+					^true;
+				}, {
+					playing = false;
+					^false;
+				});
+				
+			});
+		}, {
+			^false;
+		})
 	}
 	
 	// Method based on suggestion by Till Bovermann

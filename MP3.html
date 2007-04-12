@@ -10,18 +10,18 @@
 p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 18.0px Helvetica}
 p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
 p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
-p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #ad140d}
-p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #bf0000}
-p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000}
-p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #0000bf}
-p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #000000; min-height: 12.0px}
+p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; color: #a91a07}
+p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #ba1100}
+p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco}
+p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #001fbf}
+p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; min-height: 12.0px}
 p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 9.0px Monaco; color: #606060}
-span.s1 {color: #001bb9}
+span.s1 {color: #002ab9}
 span.s2 {color: #606060}
-span.s3 {color: #2c7014}
+span.s3 {color: #356d16}
 span.s4 {color: #000000}
-span.s5 {color: #0000bf}
-span.s6 {color: #007300}
+span.s5 {color: #001fbf}
+span.s6 {color: #1d7008}
 span.Apple-tab-span {white-space:pre}
 </style>
 </head>
@@ -47,6 +47,7 @@ span.Apple-tab-span {white-space:pre}
 <p class="p2"><br></p>
 <p class="p3">For file writing, the class tells lame to expect <i>16-bit raw audio data at 44.1 kHz</i>, so this is what you must output - see the example below. (The reason for writing as raw data is that the "fifo" trick excludes the possibility of the fileseeking which is required for writing soundfile headers.)</p>
 <p class="p2"><br></p>
+<p class="p3">The .playing flag can tell you whether the MP3 is currently (still) playing. (It will revert back to false if the MP3 file finishes, even if you haven't called the .stop method.)</p>
 <p class="p2"><br></p>
 <p class="p3"><b>Examples</b></p>
 <p class="p2"><br></p>
@@ -77,8 +78,11 @@ span.Apple-tab-span {white-space:pre}
 <p class="p6">b = <span class="s5">Buffer</span>.cueSoundFile(s, m.fifo, 0, 2);</p>
 <p class="p6">x = <span class="s5">Synth</span>(<span class="s2">"help_mp3_01"</span>, [<span class="s6">\bufnum</span>, b.bufnum], addAction:<span class="s6">\addToTail</span>);</p>
 <p class="p5">// You can stop and restart the piping (with a bit of a delay) - note what happens</p>
+<p class="p6">m.playing;</p>
 <p class="p6">m.stop;</p>
+<p class="p6">m.playing;</p>
 <p class="p6">m.start;</p>
+<p class="p6">m.playing;</p>
 <p class="p5">// Please remember to tidy up after yourself:</p>
 <p class="p6">x.free;</p>
 <p class="p6">b.close; b.free;</p>
