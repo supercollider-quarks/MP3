@@ -32,6 +32,13 @@ MP3 {
 	}
 	
 	init {
+		
+		// If we're reading a local file, let's check it exists so as to prevent later problems
+		if((mode!=\readurl) && (mode !=\writefile) && File.exists(path).not, {
+			"Local MP3 file not found".warn;
+			^nil;
+		});
+		
 		// Establish our FIFO
 		fifo = "/tmp/sc3mp3-" ++ this.hash ++ ".fifo";
 		("mkfifo "++fifo).systemCmd;
