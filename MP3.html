@@ -47,7 +47,7 @@ span.Apple-tab-span {white-space:pre}
 <p class="p2"><br></p>
 <p class="p3">For file writing, the class tells lame to expect <i>16-bit raw audio data at 44.1 kHz</i>, so this is what you must output - see the example below. (The reason for writing as raw data is that the "fifo" trick excludes the possibility of the fileseeking which is required for writing soundfile headers.)</p>
 <p class="p2"><br></p>
-<p class="p3">The .playing flag can tell you whether the MP3 is currently (still) playing. (It will revert back to false if the MP3 file finishes, even if you haven't called the .stop method.)</p>
+<p class="p3">The .<b>playing</b> flag can tell you whether the MP3 is currently (still) playing - i.e. it is true if you have started the MP3 and not yet stopped it. (It will revert back to false if the MP3 file finishes, even if you haven't called the .stop method.)</p>
 <p class="p2"><br></p>
 <p class="p3"><b>Examples</b></p>
 <p class="p2"><br></p>
@@ -77,8 +77,8 @@ span.Apple-tab-span {white-space:pre}
 <p class="p5">// Now you can use it almost like any other file, by reading from m.fifo</p>
 <p class="p6">b = <span class="s5">Buffer</span>.cueSoundFile(s, m.fifo, 0, 2);</p>
 <p class="p6">x = <span class="s5">Synth</span>(<span class="s2">"help_mp3_01"</span>, [<span class="s6">\bufnum</span>, b.bufnum], addAction:<span class="s6">\addToTail</span>);</p>
-<p class="p5">// You can stop and restart the piping (with a bit of a delay) - note what happens</p>
 <p class="p6">m.playing;</p>
+<p class="p5">// You can stop and restart the piping (with a bit of a delay) - note what happens</p>
 <p class="p6">m.stop;</p>
 <p class="p6">m.playing;</p>
 <p class="p6">m.start;</p>
