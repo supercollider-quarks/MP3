@@ -5,7 +5,7 @@
 MP3 {
 	
 	classvar	<>lamepath 
-				= "/opt/local/bin/lame",
+				= "/usr/local/bin/lame",
 			//	= "/sw/bin/lame",
 			<>curlpath = "/usr/bin/curl"
 			;
