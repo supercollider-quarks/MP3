@@ -102,10 +102,10 @@ MP3 {
 				pid = nil;
 			}, {
 				pid = diff[0];
-				("MP3.start - PID is" + pid).postln;
+				//("MP3.start - PID is" + pid).postln;
 			});
 			
-			"MP3.start completed".postln;
+			("MP3.start completed (PID"+(pid?"unknown")++")").postln;
 			playing = true;
 		}).play(AppClock);
 	}
