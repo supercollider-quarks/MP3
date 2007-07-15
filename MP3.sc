@@ -5,15 +5,15 @@
 MP3 {
 	
 	classvar	<>lamepath 
-				= "/usr/local/bin/lame",
-			//	= "/sw/bin/lame",
+			//	= "/usr/local/bin/lame",
+				= "/sw/bin/lame",
 			<>curlpath = "/usr/bin/curl"
 			;
 	
 	var // These are filled by newCopyArgs:
 		<path, <mode,
 		// These are other vars:
-		<fifo, <lameproc, /* <proctrackfile, */ <pid, playing=false;
+		<fifo, <lameproc, <pid, playing=false;
 	
 	*initClass {
 		// Check that at least *something* exists at the desired executable paths
@@ -22,8 +22,17 @@ MP3 {
 	}
 	
 	*checkForExecutable { |path, execname, varname|
-		if(("ls" + path + "| grep" + path + "> /dev/null 2>&1").systemCmd != 0, {
-			("'"++execname++"' executable not found. Please modify the MP3:"++varname++" class variable.").warn;
+		var srch;
+		if(File.exists(path).not, {
+			srch = ("which" + execname).unixCmdGetStdOut.split($\n).join("");
+			//"Result of search for executable:".postln;
+			//srch.postln;
+			if((srch.beginsWith("no ") || srch.isNil || (srch=="")).not, {
+				("MP3."++varname + "=" + $" ++ srch ++ $").interpret;
+				("MP3."++varname + "automatically set to" + srch).postln;
+			}, {
+				("'"++execname++"' executable not found. Please modify the MP3:"++varname++" class variable.").warn;
+			});
 		});
 	}
 	
@@ -66,48 +75,15 @@ MP3 {
 		}
 		);
 		
-		"".postln;
+		//"".postln;
 		//"MP3.start: command to execute is:".postln;
 		//cmd.postln;
-				
-		// Need to start the process and store a reference to it
-		Task({
-			// List processes before we launch
-			pipe = Pipe.new("ps -xc -o \"pid command\" | grep" + cmdname + "| sed 's/" ++ cmdname ++ "//; s/ //g'", "r");
-			line = pipe.getLine;
-			while({line.notNil}, {lines = lines ++ line ++ "\n"; line = pipe.getLine; });
-			pipe.close;
-			prepids = if(lines.isNil, [], {lines.split($\n).collect(_.asInteger)});
-			//("PIDS pre:  " + prepids).postln;
-			
-			// Run the cmd! NB use .unixCmd because we don't want to wait for a result (as would .systemCmd).
-			cmd.unixCmd;
-
-			0.2.wait;
-			
-			// List processes after we launch
-			lines = "";
-			pipe = Pipe.new("ps -xc -o \"pid command\" | grep" + cmdname + "| sed 's/" ++ cmdname ++ "//; s/ //g'", "r");
-			line = pipe.getLine;
-			while({line.notNil}, {lines = lines ++ line ++ "\n"; line = pipe.getLine; });
-			pipe.close;
-			postpids = if(lines.isNil, [], {lines.split($\n).collect(_.asInteger)});
-			//("PIDS post: " + postpids).postln;
-			
-			
-			// Can we spot a single addition?
-			diff = difference(postpids, prepids).select(_ > 0);
-			if(diff.size != 1, {
-				("MP3.start - unable to be sure of the " ++ cmdname ++ " PID - you will need to terminate it yourself").warn;
-				pid = nil;
-			}, {
-				pid = diff[0];
-				//("MP3.start - PID is" + pid).postln;
-			});
-			
+		
+		cmd.unixCmdInferPID({|thepid|
+			pid = thepid;
 			("MP3.start completed (PID"+(pid?"unknown")++")").postln;
 			playing = true;
-		}).play(AppClock);
+		});
 	}
 	
 	stop {
@@ -132,25 +108,11 @@ MP3 {
 	
 	// Return a boolean to say whether we're playing or not
 	playing {
-		var pipe, line, lines;
 		if(playing, {
 			if(pid.isNil, {
 				^true; // We can only assume it's still playing - we have no better info!
 			}, {
-				// Check that the stream really is still playing.
-				// We can only do this if the PID is known.
-				// (If it's stopped playing, set the flag to false.)
-				
-				pipe = Pipe.new("ps -p" ++ pid, "r");
-				lines = "";
-				line = pipe.getLine;
-				while({line.notNil}, {lines = lines ++ line ++ "\n"; line = pipe.getLine; });
-				pipe.close;
-				
-				//"ps fetched the following:".postln;
-				//lines.postln;
-				
-				if(lines.contains(pid.asString), {
+				if(pid.isPIDRunning, {
 					^true;
 				}, {
 					playing = false;
