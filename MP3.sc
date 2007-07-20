@@ -17,13 +17,24 @@ MP3 {
 	
 	*initClass {
 		// Check that at least *something* exists at the desired executable paths
-		this.checkForExecutable(lamepath, "lame", "lamepath");
+		this.checkForExecutable(lamepath, "lame", "lamepath", #["/opt/local/bin/lame"]);
 		this.checkForExecutable(curlpath, "curl", "curlpath");
 	}
 	
-	*checkForExecutable { |path, execname, varname|
+	*checkForExecutable { |path, execname, varname, otherposs|
 		var srch;
 		if(File.exists(path).not, {
+			
+			if(otherposs.isArray, {
+				otherposs.do({|poss|
+					if(File.exists(poss), {
+						("MP3."++varname + "=" + $" ++ poss ++ $").interpret;
+						("MP3."++varname + "automatically set to" + poss).postln;
+						^this;
+					});
+				});
+			});
+			
 			srch = ("which" + execname).unixCmdGetStdOut.split($\n).join("");
 			//"Result of search for executable:".postln;
 			//srch.postln;
