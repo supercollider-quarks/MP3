@@ -7,11 +7,13 @@ MP3 {
 	classvar	<>lamepath 
 			//	= "/usr/local/bin/lame",
 				= "/sw/bin/lame",
-			<>curlpath = "/usr/bin/curl"
+			<>curlpath = "/usr/bin/curl",
+			<>oggdecpath
+				= "/opt/local/bin/oggdec"
 			;
 	
 	var // These are filled by newCopyArgs:
-		<path, <mode,
+		<path, <mode, <format,
 		// These are other vars:
 		<fifo, <lameproc, <pid, playing=false;
 	
@@ -19,6 +21,7 @@ MP3 {
 		// Check that at least *something* exists at the desired executable paths
 		this.checkForExecutable(lamepath, "lame", "lamepath", #["/opt/local/bin/lame"]);
 		this.checkForExecutable(curlpath, "curl", "curlpath");
+		this.checkForExecutable(oggdecpath, "oggdec", "oggdecpath", #["/usr/local/bin/oggdec", "/sw/bin/oggdec"]);
 	}
 	
 	*checkForExecutable { |path, execname, varname, otherposs|
@@ -47,15 +50,15 @@ MP3 {
 		});
 	}
 	
-	*new { |path, mode=\readfile|
-		^super.newCopyArgs(path, mode).init;
+	*new { |path, mode=\readfile, format=\mp3|
+		^super.newCopyArgs(path, mode, format).init;
 	}
 	
 	init {
 		
 		// If we're reading a local file, let's check it exists so as to prevent later problems
 		if((mode!=\readurl) && (mode !=\writefile) && File.exists(path).not, {
-			"Local MP3 file not found".warn;
+			("MP3 error: local file not found:\n" ++ path).warn;
 			^nil;
 		});
 		
@@ -74,15 +77,30 @@ MP3 {
 		// cmd is the command to execute, cmdname is used to search for it in the list of PIDs
 		mode.switch(
 		\readurl, {
-			cmd = curlpath + "--silent \"" ++ path ++ "\" |" + lamepath + "--mp3input --decode --silent" + lameopts + " - " + fifo + "> /dev/null";
-			cmdname = "curl";
+			format.switch(
+			\ogg, {
+				cmd = curlpath + "--silent \"" ++ path ++ "\" |" + oggdecpath + "--quiet" + lameopts + "- --output" + fifo + "> /dev/null";
+				cmdname = "curl";
+			},
+			{ // Default is MP3
+				cmd = curlpath + "--silent \"" ++ path ++ "\" |" + lamepath + "--mp3input --decode --silent" + lameopts + " - " + fifo + "> /dev/null";
+				cmdname = "curl";
+			});
 		},
 		\writefile, {
 			cmd = lamepath + "--silent -r -s 44.1 --bitwidth 16" + lameopts + "\"" ++ fifo ++ "\"" + path + "> /dev/null";
 			cmdname = "lame";
 		}, { // Default is to read a local file
-			cmd = lamepath + "--decode --silent " + lameopts + "\"" ++ path ++ "\"" + fifo + "> /dev/null";
-			cmdname = "lame";
+			format.switch(
+			\ogg, {
+				cmd = oggdecpath + "--quiet " + lameopts + "\"" ++ path ++ "\" --output" + fifo + "> /dev/null";
+				cmdname = "oggdec";
+			},
+			{ // Default is MP3
+				cmd = lamepath + "--decode --silent " + lameopts + "\"" ++ path ++ "\"" + fifo + "> /dev/null";
+				cmdname = "lame";
+			}
+			);
 		}
 		);
 		
@@ -142,7 +160,7 @@ MP3 {
 		if((MP3.lamepath + "--decode" + lameopts + "\"" ++ path ++ "\"" + tmpPath).systemCmd == 0, {
 			^Buffer.read(server,tmpPath,startFrame,numFrames, {("rm" + tmpPath).unixCmd} <> action, bufnum);
 		}, {
-			("Unable to read MP3 file:" + path).warn;
+			("MP3: unable to read file:" + path).warn;
 			("rm" + tmpPath).unixCmd;
 		});
 	}
