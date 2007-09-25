@@ -5,8 +5,8 @@
 MP3 {
 	
 	classvar	<>lamepath 
-			//	= "/usr/local/bin/lame",
-				= "/sw/bin/lame",
+				= "/usr/local/bin/lame",
+			//	= "/sw/bin/lame",
 			<>curlpath = "/usr/bin/curl",
 			<>oggdecpath
 				= "/opt/local/bin/oggdec"
