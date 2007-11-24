@@ -15,7 +15,9 @@ MP3 {
 	var // These are filled by newCopyArgs:
 		<path, <mode, <format,
 		// These are other vars:
-		<fifo, <lameproc, <pid, playing=false;
+		<fifo, <lameproc, <pid, playing=false, 
+		// Set sampleRate to match the server you're using the MP3 with (defaults to default server's sample rate)
+		<>sampleRate;
 	
 	*initClass {
 		// Check that at least *something* exists at the desired executable paths
@@ -72,7 +74,12 @@ MP3 {
 	
 	// Start the LAME command - involving some elastic trickery to work out the PID of the created process.
 	start { |lameopts=""|
-		var cmd, prepids, postpids, diff, cmdname, pipe, line, lines;
+		var cmd, prepids, postpids, diff, cmdname, pipe, line, lines, khz;
+		
+		if(sampleRate.isNil){
+			sampleRate = Server.default.sampleRate;
+		};
+		khz = sampleRate * 0.001;
 		
 		// cmd is the command to execute, cmdname is used to search for it in the list of PIDs
 		mode.switch(
@@ -83,12 +90,12 @@ MP3 {
 				cmdname = "curl";
 			},
 			{ // Default is MP3
-				cmd = curlpath + "--silent \"" ++ path ++ "\" |" + lamepath + "--mp3input --decode --silent" + lameopts + " - " + fifo + "> /dev/null";
+				cmd = curlpath + "--silent \"" ++ path ++ "\" |" + lamepath + "--mp3input --decode --silent --resample" + khz + lameopts + " - " + fifo + "> /dev/null";
 				cmdname = "curl";
 			});
 		},
 		\writefile, {
-			cmd = lamepath + "--silent -r -s 44.1 --bitwidth 16" + lameopts + "\"" ++ fifo ++ "\"" + path + "> /dev/null";
+			cmd = lamepath + "--silent -r -s" + khz + "--bitwidth 16" + lameopts + "\"" ++ fifo ++ "\"" + path + "> /dev/null";
 			cmdname = "lame";
 		}, { // Default is to read a local file
 			format.switch(
@@ -97,7 +104,7 @@ MP3 {
 				cmdname = "oggdec";
 			},
 			{ // Default is MP3
-				cmd = lamepath + "--decode --silent " + lameopts + "\"" ++ path ++ "\"" + fifo + "> /dev/null";
+				cmd = lamepath + "--decode --silent --resample" + khz + lameopts + "\"" ++ path ++ "\"" + fifo + "> /dev/null";
 				cmdname = "lame";
 			}
 			);
