@@ -34,7 +34,7 @@ MP3 {
 				otherposs.do({|poss|
 					if(File.exists(poss), {
 						("MP3."++varname + "=" + $" ++ poss ++ $").interpret;
-						("MP3."++varname + "automatically set to" + poss).postln;
+						// less verbose	("MP3."++varname + "automatically set to" + poss).postln;
 						^this;
 					});
 				});
