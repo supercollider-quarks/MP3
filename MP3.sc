@@ -116,11 +116,14 @@ MP3 {
 		//"MP3.start: command to execute is:".postln;
 		//cmd.postln;
 		
-		cmd.unixCmdInferPID({|thepid|
-			pid = thepid;
-			("MP3.start completed (PID"+(pid?"unknown")++")").postln;
-			playing = true;
-		});
+//		cmd.unixCmdInferPID({|thepid|
+//			pid = thepid;
+//			("MP3.start completed (PID"+(pid?"unknown")++")").postln;
+//			playing = true;
+//		});
+		pid = cmd.unixCmd;
+		("MP3.start completed (PID"+(pid?"unknown")++")").postln;
+		playing = true;
 	}
 	
 	stop {
