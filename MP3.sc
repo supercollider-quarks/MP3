@@ -3,8 +3,8 @@
 // Free to use under the GPL.
 
 MP3 {
-	
-	classvar	<>lamepath 
+
+	classvar	<>lamepath
 				= "/usr/local/bin/lame",
 			//	= "/usr/texbin/lamed",
 			//	= "/sw/bin/lame",
@@ -12,25 +12,25 @@ MP3 {
 			<>oggdecpath
 				= "/opt/local/bin/oggdec"
 			;
-	
+
 	var // These are filled by newCopyArgs:
 		<path, <mode, <format,
 		// These are other vars:
-		<fifo, <lameproc, <pid, playing=false, 
+		<fifo, <lameproc, <pid, playing=false,
 		// Set sampleRate to match the server you're using the MP3 with (defaults to default server's sample rate)
 		<>sampleRate;
-	
+
 	*initClass {
 		// Check that at least *something* exists at the desired executable paths
 		this.checkForExecutable(lamepath, "lame", "lamepath", #["/opt/local/bin/lame"]);
 		this.checkForExecutable(curlpath, "curl", "curlpath");
 		this.checkForExecutable(oggdecpath, "oggdec", "oggdecpath", #["/usr/local/bin/oggdec", "/sw/bin/oggdec"]);
 	}
-	
+
 	*checkForExecutable { |path, execname, varname, otherposs|
 		var srch;
 		if(File.exists(path).not, {
-			
+
 			if(otherposs.isArray, {
 				otherposs.do({|poss|
 					if(File.exists(poss), {
@@ -40,7 +40,7 @@ MP3 {
 					});
 				});
 			});
-			
+
 			srch = ("which" + execname).unixCmdGetStdOut.split($\n).join("");
 			//"Result of search for executable:".postln;
 			//srch.postln;
@@ -52,36 +52,36 @@ MP3 {
 			});
 		});
 	}
-	
+
 	*new { |path, mode=\readfile, format=\mp3|
 		^super.newCopyArgs(path, mode, format).init;
 	}
-	
+
 	init {
-		
+
 		// If we're reading a local file, let's check it exists so as to prevent later problems
 		if((mode!=\readurl) && (mode !=\writefile) && File.exists(path).not, {
 			("MP3 error: local file not found:\n" ++ path).warn;
 			^nil;
 		});
-		
+
 		// Establish our FIFO
 		fifo = "/tmp/sc3mp3-" ++ this.hash ++ ".fifo";
 		("mkfifo "++fifo).systemCmd;
-		
+
 		// Ensure things will be tidied up if the user recompiles
-		UI.registerForShutdown({this.finish});
+		ShutDown.add({this.finish});
 	}
-	
+
 	// Start the LAME command - involving some elastic trickery to work out the PID of the created process.
 	start { |lameopts=""|
 		var cmd, prepids, postpids, diff, cmdname, pipe, line, lines, khz;
-		
+
 		if(sampleRate.isNil){
 			sampleRate = Server.default.sampleRate;
 		};
 		khz = sampleRate * 0.001;
-		
+
 		// cmd is the command to execute, cmdname is used to search for it in the list of PIDs
 		mode.switch(
 		\readurl, {
@@ -111,11 +111,11 @@ MP3 {
 			);
 		}
 		);
-		
+
 		//"".postln;
 		//"MP3.start: command to execute is:".postln;
 		//cmd.postln;
-		
+
 //		cmd.unixCmdInferPID({|thepid|
 //			pid = thepid;
 //			("MP3.start completed (PID"+(pid?"unknown")++")").postln;
@@ -125,7 +125,7 @@ MP3 {
 		("MP3.start completed (PID"+(pid?"unknown")++")").postln;
 		playing = true;
 	}
-	
+
 	stop {
 		if(pid.isNil, {
 			"MP3.stop - unable to stop automatically, PID not known".warn;
@@ -135,17 +135,17 @@ MP3 {
 			playing = false;
 		});
 	}
-	
+
 	restart {
 		this.stop;
 		this.start;
 	}
-		
+
 	finish {
 		this.stop;
 		("rm " ++ fifo).systemCmd;
 	}
-	
+
 	// Return a boolean to say whether we're playing or not
 	playing {
 		if(playing, {
@@ -158,13 +158,13 @@ MP3 {
 					playing = false;
 					^false;
 				});
-				
+
 			});
 		}, {
 			^false;
 		})
 	}
-	
+
 	// Method based on suggestion by Till Bovermann
 	*readToBuffer { |server,path,startFrame = 0,numFrames, action, bufnum, lameopts="" |
 		var tmpPath = "/tmp/sc3mp3read-" ++ this.hash ++ ".wav" ;
