@@ -152,7 +152,7 @@ MP3 {
 			if(pid.isNil, {
 				^true; // We can only assume it's still playing - we have no better info!
 			}, {
-				if(pid.isPIDRunning, {
+				if(pid.pidRunning, {
 					^true;
 				}, {
 					playing = false;
