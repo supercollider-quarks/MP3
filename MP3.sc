@@ -79,6 +79,10 @@ MP3 {
 
 		if(sampleRate.isNil){
 			sampleRate = Server.default.sampleRate;
+			if(sampleRate.isNil) {
+				"Sample rate not available, assuming 44100".warn;
+				sampleRate = 44100;
+			};
 		};
 		khz = sampleRate * 0.001;
 
@@ -121,7 +125,13 @@ MP3 {
 //			("MP3.start completed (PID"+(pid?"unknown")++")").postln;
 //			playing = true;
 //		});
-		pid = cmd.unixCmd;
+		pid = cmd.unixCmd({ |exit|
+			if(exit != 0) {
+				"MP3 subprocess (PID %) terminated with error code %".format(pid, exit).warn;
+				playing = false;
+				pid = nil;
+			};
+		});
 		("MP3.start completed (PID"+(pid?"unknown")++")").postln;
 		playing = true;
 	}
