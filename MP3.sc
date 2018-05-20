@@ -128,9 +128,9 @@ MP3 {
 		pid = cmd.unixCmd({ |exit|
 			if(exit != 0) {
 				"MP3 subprocess (PID %) terminated with error code %".format(pid, exit).warn;
-				playing = false;
-				pid = nil;
 			};
+			playing = false;
+			pid = nil;
 		});
 		("MP3.start completed (PID"+(pid?"unknown")++")").postln;
 		playing = true;
