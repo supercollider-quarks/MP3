@@ -137,7 +137,7 @@ MP3 {
 	}
 
 	stop {
-		if(pid.isNil, {
+		if(this.playing and: { pid.isNil }, {
 			"MP3.stop - unable to stop automatically, PID not known".warn;
 		}, {
 			("kill" + pid).systemCmd;
