@@ -130,7 +130,8 @@ MP3 {
 		if(pid.isNil, {
 			"MP3.stop - unable to stop automatically, PID not known".warn;
 		}, {
-			("kill" + pid).systemCmd;
+		        ("pkill -P" + pid).systemCmd;
+			("MP3 killed PID"+pid+"and child.").postln;
 			pid = nil;
 			playing = false;
 		});
