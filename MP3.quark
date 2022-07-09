@@ -5,6 +5,6 @@
 	\author: "Dan Stowell",
 	\url:           "http://www.mcld.co.uk/",
 	\version:	1.2,
-	\ext_dependancy: "LAME must be installed: see http://lame.sourceforge.net/ or install via fink or macports",
+	\ext_dependency: "LAME must be installed: see http://lame.sourceforge.net/ or install via fink or macports",
 	\helpdoc: "MP3.html"
 )
